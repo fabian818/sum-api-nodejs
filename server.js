@@ -1,45 +1,38 @@
 const express = require('express')
 const bodyParser = require('body-parser')
-const routes = require('./routes')
 const passport = require('passport')
 
+const routes = require('./app/routes')
+
 const app = express()
+
 const expressSwagger = require('express-swagger-generator')(app);
 
 let options = {
     swaggerDefinition: {
         info: {
-            description: 'This is a sample server',
-            title: 'Swagger',
-            version: '1.0.0',
+            description: 'Sum API',
+            title: 'Sum API',
+            version: '1.0.3',
         },
-        host: 'localhost:3000',
+        host: 'localhost:8080',
         basePath: '/v1',
         produces: [
             "application/json",
             "application/xml"
         ],
-        schemes: ['http', 'https'],
-        securityDefinitions: {
-            JWT: {
-                type: 'apiKey',
-                in: 'header',
-                name: 'Authorization',
-                description: "",
-            }
-        }
+        schemes: ['http'],
     },
     basedir: __dirname, //app absolute path
-    files: ['./routes/**/*.js'] //Path to the API handle folder
+    files: ['./app/routes/**/*.js'] //Path to the API handle folder
 };
 expressSwagger(options)
-require('./auth/auth')
+require('./app/auth/auth')
 
 app.use(bodyParser.json())
 app.use(routes)
 
-const PORT = 3000
-
+const PORT = 8080
 
 app.listen(PORT, function () {
   console.log(`App listening on ${PORT}`)
