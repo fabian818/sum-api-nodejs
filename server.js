@@ -16,7 +16,7 @@ let options = {
             version: '1.0.3',
         },
         host: 'localhost:8080',
-        basePath: '/v1',
+        basePath: '/',
         produces: [
             "application/json",
             "application/xml"

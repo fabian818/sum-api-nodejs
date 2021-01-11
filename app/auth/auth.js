@@ -23,11 +23,9 @@ passport.use('login', new localStrategy({
 }, async (username, password, done) => {
     try {
         const user = await User.findOne({ where: { username: username } })
-        console.log('username', username);
         if (!user) {
             return done(null, false, { message: 'User not found' })
         }
-        console.log('user', user);
 
         const validate = await user.isValidPassword(password)
 
@@ -46,10 +44,8 @@ passport.use(new JWTStrategy({
     jwtFromRequest: ExtractJWT.fromUrlQueryParameter('secret_token')
 }, async (token, done) => {
     try {
-        console.log('token', token);
         return done(null, token.user)
     } catch (error) {
-        console.log(error);
         done(error)
     }
 }))

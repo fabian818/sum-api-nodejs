@@ -19,6 +19,11 @@ module.exports = (sequelize, DataTypes) => {
         result: DataTypes.FLOAT,
         user_id: DataTypes.INTEGER
     }, {
+        hooks: {
+            afterValidate: (sum, options) => {
+                sum.result = sum.first_number + sum.second_number;
+            }
+        },
         sequelize,
         modelName: 'Sum',
     });

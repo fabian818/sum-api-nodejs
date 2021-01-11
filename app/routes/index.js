@@ -1,29 +1,34 @@
 const express = require('express')
 const router = express.Router()
-
 const passport = require('passport')
 const jwt = require('jsonwebtoken')
+const Sums = require('../controllers/sums')
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-    res.send('Hello World')
-})
 /**
- * This function comment is parsed by doctrine
- * @route GET /api
- * @group foo - Operations about user
- * @param {string} email.query.required - username or email - eg: user@domain
- * @param {string} password.query.required - user's password.
+ * This functions permit create a user with a signup method
+ * @route POST /signup
+ * @group users - Operations about user
+ * @param {string} username.json.required - username - eg: myUsername
+ * @param {string} password.json.required - user's password.
  * @returns {object} 200 - An array of user info
- * @returns {Error}  default - Unexpected error
+ * @returns {Error}  500 - Username already exists
  */
 router.post('/signup', passport.authenticate('signup', { session: false }), async (req, res, next) => {
     res.json({
         message: 'Signup successful',
-        user: req.user,
+        username: req.user.username,
     })
 })
 
+/**
+ * This functions permit login a user
+ * @route POST /login
+ * @group users - Operations about user
+ * @param {string} username.json.required - username - eg: myUsername
+ * @param {string} password.json.required - user's password.
+ * @returns {object} 200 - Token of loged user
+ * @returns {Error}  400 - Bad Request
+ */
 router.post('/login', async (req, res, next) => {
     passport.authenticate('login', async (err, user, info) => {
         try {
@@ -35,13 +40,8 @@ router.post('/login', async (req, res, next) => {
 
             req.login(user, { session: false }, async (err) => {
                 if (err) return next(err)
-                console.log('user', user);
                 const body = { id: user.id, username: user.username }
-                console.log('body', body);
-
                 const token = jwt.sign({ user: body }, 'top_secret')
-                console.log('token', token)
-
                 return res.json({ token })
             })
         }
@@ -51,12 +51,38 @@ router.post('/login', async (req, res, next) => {
     })(req, res, next)
 })
 
-router.get('/profile', passport.authenticate('jwt', { session: false }), (req, res, next) => {
+
+/**
+ * This functions permit to sum two numbers, token is obligatory
+ * @route POST /sum
+ * @group sum - sum operations 
+ * @param {string} first_number.json.required - first_number - eg: 21 
+ * @param {string} second_number.json.required - second_number - eg: 12.45.
+ * @returns {object} 200 - The result of the sum
+ * @returns {Error}  400 - Bad request
+ */
+
+router.post('/sum', passport.authenticate('jwt', { session: false }), async (req, res, next) => {
+    const sum = await Sums.create(
+        req.body.first_number,
+        req.body.second_number,
+        req.user.id)
     res.json({
-        message: 'You did it!',
-        user: req.user,
-        token: req.query.secret_token,
+        result: sum.result
     })
+})
+
+/**
+ * This functions permit to get the historical of sum operations, token is obligatory
+ * @route GET /sum
+ * @group sum - sum operations 
+ * @param {integer} page.query - page - eg: 1 
+ * @param {string} token.query.required - token - eg: {hash}.
+ * @returns {object} 200 - Paginated response of sum operations
+ */
+router.get('/sum', passport.authenticate('jwt', { session: false }), async (req, res, next) => {
+    const sums = await Sums.filter({user_id: req.user.id});
+    res.json(sums)
 })
 
 module.exports = router
