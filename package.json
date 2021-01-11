@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start:dev": "nodemon server.js",
-    "start:prod": "pm2 start server.js"
+    "start:prod": "pm2-runtime server.js"
   },
   "dependencies": {
     "bcrypt": "^5.0.0",
