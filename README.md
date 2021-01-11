@@ -1,5 +1,4 @@
-# Project Title
-
+# Sum Api NodeJs
 NodeJs api to auth and sum two numbers.
 
 ## Getting Started
@@ -17,11 +16,50 @@ Docker
 
 Docker run the application with the following variables:
 
+```
 DB_USERNAME
 DB_PASSWORD
 DB_DATABASE
 DB_HOST
 CRYPTO_KEY
+```
+
+### Usage
+```
+# register into the application
+POST /signup
+body: 
+{
+    "username": "",
+    "password": ""
+}
+
+=====================
+# loggin into the application
+POST /login
+body: 
+{
+    "username": "",
+    "password": ""
+}
+Response:
+{
+    "secret_token": ""
+}
+
+=====================
+# insert sum operation by logged user
+POST /sum?secret_token={}
+body: 
+{
+    "first_number": 1,
+    "second_number": 2
+}
+
+=====================
+# get al sums by logged user
+GET /sum?secret_token={}
+```
 
 ## Deployment
 
@@ -29,7 +67,7 @@ Follow the instructions at [Sum Api Ansible](https://github.com/fabian818/sum-ap
 
 ## Integration
 
-Continuous Integration with Github Actions, after each release an iamge is deployed to: [fabian818 Dockerhub](https://hub.docker.com/repository/docker/fabian818/sum-api-nodejs/).
+Continuous Integration with Github Actions, after each release an image is deployed to: [fabian818 Dockerhub](https://hub.docker.com/repository/docker/fabian818/sum-api-nodejs/).
 
 ## Built With
 

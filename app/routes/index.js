@@ -54,8 +54,8 @@ router.post(
                 req.login(user, { session: false }, async (err) => {
                     if (err) return next(err)
                     const body = { id: user.id, username: user.username }
-                    const token = jwt.sign({ user: body }, process.env.CRYPTO_KEY)
-                    return res.json({ token })
+                    const secret_token = jwt.sign({ user: body }, process.env.CRYPTO_KEY)
+                    return res.json({ secret_token })
                 })
             }
             catch(e) {
