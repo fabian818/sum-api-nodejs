@@ -24,6 +24,11 @@ DB_HOST
 CRYPTO_KEY
 ```
 
+You can run the project without docker witn node 12 installed, and runing:
+```
+npm run start:dev
+```
+
 ### Usage
 ```
 # register into the application
